@@ -9,7 +9,12 @@ def _price_target(ticker, exchange='NASDAQ'):
 	response = get(BASE_URL, headers=HEADERS, timeout=20)
 	assert response.status_code == 200
 	soup = BeautifulSoup(response.content, 'lxml')
-	price_target = soup.find('thead', {'class': 'hide-scrollbar'})
+	price_target = soup.find('table', {'class': 'scroll-table'})
 	return price_target
 
 print(_price_target('AAPL'))
+
+
+# html = soup.prettify("utf-8") Good way to visualize what your Python code is visualizing
+# with open('output1.html', 'w', encoding='utf-8') as f:
+# 	f.write(str(_price_target('AAPL')))

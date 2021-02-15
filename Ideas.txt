@@ -46,3 +46,5 @@ There are many sites you can use to dig into a stock such as (1) Yahoo Finance, 
 Additional functionality: When typing in the symbol, have the outfill
 
 Has to be useful: https://stocktwits.com/rankings
+
+twitter api for spac twitter, other penny stock twitter dud
