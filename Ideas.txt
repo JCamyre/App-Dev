@@ -1,2 +1,48 @@
 Easiest to use tasks/reminder app
 Stock app where all important dates easily available (with calendar and quickchart), with signals like over 180, over 9, low rsi
+
+Poggers easy stock research app: Enter the ticker, output the following:
+
+I look at price upside. I look to see what the analysts covering it, have to say about the price targets. (Money is a tool, and you want it to work for you). MarketBeat.com can show you this: https://www.marketbeat.com/stocks/NASDAQ/AAPL/price-target/
+
+I look at the charts and the technicals. I try to read and interpret the charts to see what previous trading patterns can predict. What are the short-term, mid-term and long-term predictions? A site you can use to interpret the charts for you is BarChart.com and TradingView.com.
+
+https://www.barchart.com/stocks/quotes/AAPL/opinion
+
+https://www.tradingview.com/symbols/NASDAQ-AAPL/technicals/
+
+I dig deeper into technical analysis and the charts. I look at RSI, moving averages, MACD, Stochastic Oscillator, etc. (Prob some site for this)
+
+Sentiment & News. What are people saying? Google the company. (https://pypi.org/project/GoogleNews/)
+
+Earnings & revenue history. Is there growth? Is there potential? I look at the financials and the projections (Lol, but https://www.nasdaq.com/market-activity/stocks/aapl/financials)
+
+Growth. I look into the financials to look at past growth. I look into news, 10Q's, 10Ks, investor presentations, and statements to look for future growth. (10K for AAPL: https://www.sec.gov/Archives/edgar/data/320193/000032019319000119/a10-k20199282019.htm, 10Q for AAPL: https://last10k.com/sec-filings/aapl, for statements and investor presentations just google using GoogleNews)
+
+Financial health. Are the financials strong? (Quick ratio, Profit margin, EPS, Income Statement Trend, Cashflow). (https://finviz.com/quote.ashx?t=AAPL, have to use the proxy and agent and whatever to access)
+
+Valuations. How is this valuated? (PEG ratio, P/E ratio) (https://finance.yahoo.com/quote/AAPL/key-statistics?p=AAPL)
+
+Short selling. How much of this stock is sold short? Are people betting against it? (https://finviz.com/quote.ashx?t=AAPL)
+
+What is the put/call ratio? Are people betting against this stock? (https://www.alphaquery.com/stock/AAPL/volatility-option-statistics/120-day/put-call-ratio-oi)
+
+Peers & competition. How does this company stack up against its competitors and peers? How do the financials compare? How to the products compare? Is there a moat? (One of the links has the sector the stock is in, then search for stocks in similar fields and search their financials)
+
+Institutional Sponsorship. Are big banks and wall street holding this? How much or this companys stock do they hold?
+
+Insider Trading. Is the CEO buying or selling shares?
+
+The amount of ETFs that hold this stock. Will they continue to buy it up and drive price?
+
+Average volume traded. Is this stock liquid? Would I be able to get my money back? How easy can I trade it.
+
+Social sentiment. I check what people are saying on twitter and google search trends.
+
+News moves a stock. So I also use google to find out as much as a company as possible.
+
+There are many sites you can use to dig into a stock such as (1) Yahoo Finance, (2) MarketBeat.com, (3) MacroTrends.com, (4) MarketWatch.com, (5) CNNMoney.com, (6) CNBC.com
+
+Additional functionality: When typing in the symbol, have the outfill
+
+Has to be useful: https://stocktwits.com/rankings
