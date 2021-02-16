@@ -28,7 +28,13 @@ def _get_soup(url):
 
 HEADERS = {'User-Agent': "'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) AppleWebKit/537.36 " # Telling the website what browser I am "using"
 							 "(KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36'"}
-# Price targets
+def _get_summary(ticker):
+	BASE_URL = f'https://www.marketwatch.com/investing/stock/{ticker}'
+	soup = _get_soup(BASE_URL)
+
+	summary = soup.find('p', {'class': 'description__text'})
+	return summary.get_text()
+
 def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock exchange
 	soup = _get_soup(BASE_URL)
 	table = soup.find('table', {'class': "scroll-table"})
@@ -91,7 +97,6 @@ def _ta_indictators(ticker, exchange='NASDAQ'): # Loads wrong page
 	# with open('output1.html', 'w', encoding='utf-8') as file:
 	# 	file.write(str(soup.prettify('utf-8')))
 
-# _ta_indictators('AAPL')
 
 def _sentiments_news(ticker): # Returns news articles curated via Finviz
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
@@ -106,9 +111,11 @@ def _sentiments_news(ticker): # Returns news articles curated via Finviz
 		link = article.find('a')['href']
 		df_data.append((date.get_text(), article.get_text(), link))
 	df = pd.DataFrame(df_data, columns=['Time', 'Headline', 'Link'])
+
+	# Getting news from google news search
+
 	return df
 
-# print(_sentiments_news('AAPL'))
 
 def _financials(ticker): # OMEGALUL
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}'
@@ -121,7 +128,6 @@ def _short_selling(ticker):
 	values = soup.find_all('td', {'class': 'snapshot-td2'})
 	return labels[16].get_text(), values[16].get_text(), labels[22].get_text(), values[22].get_text()
 
-_short_selling('AAPL')
 
 def _put_call_ratio(ticker):
 	BASE_URL = f'https://www.alphaquery.com/stock/{ticker}/volatility-option-statistics/120-day/put-call-ratio-oi'
@@ -148,7 +154,6 @@ def _find_competition(ticker):
 		print('')
 
 
-
 def _insider_trading(ticker):
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
 	soup = _get_soup(BASE_URL)
@@ -156,4 +161,6 @@ def _insider_trading(ticker):
 	tr = soup.find_all('tr', {'class': "insider-sale-row-2"})
 	print([i.get_text() for i in tr])
 
-_insider_trading('AAPL')
+
+def _stock_twits_sentiment(ticker):
+	pass
