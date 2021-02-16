@@ -33,7 +33,11 @@ def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock
 	table = soup.find('table', {'class': "fullview-ratings-outer"})
 	rows = table.find_all('td', {'class': 'fullview-ratings-inner'})
 	for row in rows:
-		print(row.find_all('tr'))
+		row = row.find_all('td')
+		date, _, fund, action, pricetarget = [val.get_text() for val in row]
+		print(date, fund, action, pricetarget)
+
+
 	df_data = []
 	for row in rows:
 		print(row.get_text().split())
