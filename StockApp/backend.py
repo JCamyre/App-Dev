@@ -71,4 +71,7 @@ def _ta_indictators(ticker):
 
 def _sentiments_news(ticker):
 	table = soup.find('table', {'class': 'fullview-news-outer'})
-	table.find_all
+	rows = table.find_all('tr')
+	for row in rows:
+		date = row.find('td', {'align': 'right'})
+		article = row.find('td', {'align': 'left'})
