@@ -181,6 +181,7 @@ def _big_money(ticker): # Returns recent institutional investments in a stock, a
 	# Latest institutional activity
 	table = soup.find('table', {'class', 'wsod_dataTable wsod_dataTableBig'})
 	rows = table.find_all('tr')
+	print('Recent large purchases:')
 	for row in rows:
 		date = row.find('td', {'class': 'wsod_activityDate'})
 		info = row.find('td', {'class': 'wsod_activityDetail'})
@@ -188,7 +189,7 @@ def _big_money(ticker): # Returns recent institutional investments in a stock, a
 
 	# Top 10 Owners of {Ticker}
 	table = soup.find('table', {'class': 'wsod_dataTable wsod_dataTableBig wsod_institutionalTop10'})
-	rows = table.find_all('tr')
+	rows = table.find_all('tr')[1:]
 	df_data = []
 	for row in rows:
 		data = row.find_all('td')
@@ -198,7 +199,7 @@ def _big_money(ticker): # Returns recent institutional investments in a stock, a
 
 	# Top 10 Mutual Funds Holding {Ticker}
 	table = soup.find_all('table', {'class': 'wsod_dataTable wsod_dataTableBig wsod_institutionalTop10'})[1]
-	rows = table.find_all('tr')
+	rows = table.find_all('tr')[1:]
 	df_data = []
 	for row in rows:
 		data = row.find_all('td')
@@ -206,7 +207,6 @@ def _big_money(ticker): # Returns recent institutional investments in a stock, a
 
 	mutual_funds_df = pd.DataFrame(df_data, columns=['Stockholder', 'Stake', 'Shares owned', 'Total value($)', 'Shares bought / sold', 'Total change'])
 
-	print(owners_df, mutual_funds_df)
+	return owners_df, mutual_funds_df
 
-_big_money('cciv')
 
