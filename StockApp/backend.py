@@ -123,3 +123,17 @@ def _short_selling(ticker):
 
 _short_selling('AAPL')
 
+def _put_call_ratio(ticker):
+	BASE_URL = f'https://www.alphaquery.com/stock/{ticker}/volatility-option-statistics/120-day/put-call-ratio-oi'
+	soup = _get_soup(BASE_URL)
+
+	ratio_volume = soup.find('tr', {'id': 'indicator-put-call-ratio-volume'})
+	ratio_open_interest = soup.find('tr', {'id': 'indicator-put-call-ratio-oi'})
+	forward_price = soup.find('tr', {'id': 'indicator-forward-price'})
+	call_breakeven_price = soup.find('tr', {'id': 'indicator-call-breakeven'})
+	put_breakeven_price = soup.find('tr', {'id': 'indicator-put-breakeven'})
+	option_breakeven_price = soup.find('tr', {'id': 'indicator-option-breakeven'})
+
+	return ratio_volume, ratio_open_interest, forward_price, call_breakeven_price, put_breakeven_price, option_breakeven_price
+
+def 
