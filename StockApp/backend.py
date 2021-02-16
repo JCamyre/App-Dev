@@ -21,10 +21,7 @@ HEADERS = {'User-Agent': "'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.3
 							 "(KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36'"}
 # Price targets
 def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock exchange
-	BASE_URL = f'https://www.marketbeat.com/stocks/{exchange}/{ticker}/price-target/'
-	response = get(BASE_URL, headers=HEADERS, timeout=20)
-
-	soup = BeautifulSoup(response.content, 'lxml')
+	soup = _get_soup(BASE_URL)
 	table = soup.find('table', {'class': "scroll-table"})
 	# price_target = soup.find('table', {'class': 'scroll-table'})
 	_pattern = re.compile(r'Price Target: \$\d{1,3}\.\d\d')
@@ -56,8 +53,8 @@ def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock
 
 def _price_predictions(ticker):
 	BASE_URL = f'https://www.barchart.com/stocks/quotes/{ticker}/opinion'
-	response = get(BASE_URL, headers=HEADERS, timeout=20)
-	soup = BeautifulSoup(response.text, 'lxml')
+	soup = _get_soup(BASE_URL)
+	
 	table = soup.find('table', {'data-ng-class': "{'hide': currentView !== 'strengthDirection'}"})
 	titles = soup.find_all('tr', {'class': 'indicator-title'})
 	titles = [i.get_text() for i in titles]
@@ -73,8 +70,8 @@ def _price_predictions(ticker):
 	print(df.head())
 
 def _ta_indictators(ticker):
-	pass
-
+	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
+	soup = _get_soup(BASE_URL)
 
 def _sentiments_news(ticker):
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
