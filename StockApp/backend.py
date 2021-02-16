@@ -67,4 +67,8 @@ def _price_predictions(ticker):
 	df = pd.DataFrame(df_data, columns=['Indictator', 'Signal', 'Strength', 'Direction'])
 	print(df.head())
 
+def _ta_indictators(ticker):
 
+def _sentiments_news(ticker):
+	table = soup.find('table', {'class': 'fullview-news-outer'})
+	table.find_all

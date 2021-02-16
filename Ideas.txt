@@ -48,3 +48,5 @@ Additional functionality: When typing in the symbol, have the outfill
 Has to be useful: https://stocktwits.com/rankings
 
 twitter api for spac twitter, other penny stock twitter dud
+
+Do something with stock twits messages quantity increase and such
