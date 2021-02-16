@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import pandas as pd
 from datetime import datetime
-
+from GoogleNews import GoogleNews
 
 pd.options.display.max_columns = 10
 
@@ -113,9 +113,13 @@ def _sentiments_news(ticker): # Returns news articles curated via Finviz
 	df = pd.DataFrame(df_data, columns=['Time', 'Headline', 'Link'])
 
 	# Getting news from google news search
-
+	googlenews = GoogleNews(lang='en') # Specify period for news
+	googlenews.search(ticker) 
+	print([(i, j) for i, j in zip(googlenews.get_texts(), googlenews.get_links())])
+	# To get other pages, do googlenews.get_page(2), etc.
 	return df
 
+_sentiments_news('CCIV')
 
 def _financials(ticker): # OMEGALUL
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}'
