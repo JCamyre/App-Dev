@@ -1,6 +1,7 @@
 from requests import get
 from bs4 import BeautifulSoup
 import re
+import pandas as pd
 
 def _find_match(pattern, text):
 	match = pattern.search(text)
@@ -21,10 +22,33 @@ def _price_target(ticker, exchange='NASDAQ'):
 	table = soup.find('table', {'class': "scroll-table"})
 	# price_target = soup.find('table', {'class': 'scroll-table'})
 	_pattern = re.compile(r'Price Target: \$\d{1,3}\.\d\d')
-	return _find_match(_pattern, table.get_text()).group(0)
+	price_target = _find_match(_pattern, table.get_text()).group(0)
+	_pattern = re.compile(r'\d{1,3}\.\d\d\% \w{6,8}')
+	percentage = _find_match(_pattern, table.get_text()).group(0)
+	return price_target, percentage
 
-print(_price_target('A', exchange='NYSE'))
+# print(_price_target('AAPL')) # Automatically find correct stock exchange
 
 # html = soup.prettify("utf-8") Good way to visualize what your Python code is visualizing
 # with open('output1.html', 'w', encoding='utf-8') as f:
 # 	f.write(str(_price_target('AAPL')))
+
+def _price_predictions(ticker):
+	BASE_URL = f'https://www.barchart.com/stocks/quotes/{ticker}/opinion'
+	response = get(BASE_URL, headers=HEADERS, timeout=20)
+	soup = BeautifulSoup(response.text, 'lxml')
+	table = soup.find('table', {'data-ng-class': "{'hide': currentView !== 'strengthDirection'}"})
+	titles = soup.find_all('tr', {'class': 'indicator-title'})
+	titles = [i.get_text() for i in titles]
+	data = soup.find_all('tr', {'class': 'indicator-item'})
+	data = [i.get_text() for i in data]
+	data = data[len(data)//2 + 1:]
+	df_data = []
+	for i in data:
+		signal, strength, direction = i.split()[-3:]
+		indictator = ' '.join(i.split()[:-3])
+		df_data.append((indictator, signal, strength, direction))
+	df = pd.DataFrame(df_data, columns=['Indictator', 'Signal', 'Strength', 'Direction'])
+	print(df.head())
+
+_price_predictions('AAPL')
