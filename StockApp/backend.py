@@ -4,10 +4,13 @@ import re
 import pandas as pd
 from datetime import datetime
 
+
 pd.options.display.max_columns = 10
 
 # With the amount I am accessing finviz, would it be easier to make an API?
 # Each stock is an object, use .get_news(), .get_price_targets(), etc.
+
+# Make this a class, then for all of these don't need ticker, just do self.ticker
 
 def _find_match(pattern, text):
 	match = pattern.search(text)
@@ -23,7 +26,7 @@ def _get_soup(url):
 	return BeautifulSoup(response.content, 'lxml')
 
 
-HEADERS = {'User-Agent': "'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 " # Telling the website what browser I am "using"
+HEADERS = {'User-Agent': "'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) AppleWebKit/537.36 " # Telling the website what browser I am "using"
 							 "(KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36'"}
 # Price targets
 def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock exchange
@@ -75,7 +78,7 @@ def _price_predictions(ticker):
 	df = pd.DataFrame(df_data, columns=['Indictator', 'Signal', 'Strength', 'Direction'])
 	print(df.head())
 
-def _ta_indictators(ticker, exchange='NASDAQ'):
+def _ta_indictators(ticker, exchange='NASDAQ'): # Loads wrong page
 	BASE_URL = f'https://www.tradingview.com/symbols/{exchange}-{ticker}/technicals/'
 	soup = _get_soup(BASE_URL)
 
@@ -83,7 +86,12 @@ def _ta_indictators(ticker, exchange='NASDAQ'):
 	s = soup.find_all('div', {'class': 'speedometerWrapper-1SNrYKXY'})
 	print(s)
 
-_ta_indictators('AAPL')
+	# Oscillators
+	oscillators = soup.find('div', {'class': 'container-2w8ThMcC tableWithAction-2OCRQQ8y'})
+	# with open('output1.html', 'w', encoding='utf-8') as file:
+	# 	file.write(str(soup.prettify('utf-8')))
+
+# _ta_indictators('AAPL')
 
 def _sentiments_news(ticker): # Returns news articles curated via Finviz
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
@@ -102,3 +110,4 @@ def _sentiments_news(ticker): # Returns news articles curated via Finviz
 
 # print(_sentiments_news('AAPL'))
 
+def _financials(ticker): # OMEGALUL
