@@ -29,8 +29,9 @@ def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
 	response = get(BASE_URL, headers=HEADERS, timeout=20)
 	soup = BeautifulSoup(response.content, 'lxml')
-	table = soup.find_all('table', {'class': "fullview-ratings-outer"})
-	rows = soup.find_all('tr', {'class': 'body-table-rating-neutral'})
+	table = soup.find('table', {'class': "fullview-ratings-outer"})
+	rows = table.find_all('td', {'class': 'fullview-ratings-inner'})
+	print(table)
 	for row in rows:
 		print(row.get_text())
 	return price_target, percentage
