@@ -111,3 +111,15 @@ def _sentiments_news(ticker): # Returns news articles curated via Finviz
 # print(_sentiments_news('AAPL'))
 
 def _financials(ticker): # OMEGALUL
+	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}'
+
+def _short_selling(ticker):
+	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
+	soup = _get_soup(BASE_URL)
+
+	labels = soup.find_all('td', {'class': 'snapshot-td2-cp'})
+	values = soup.find_all('td', {'class': 'snapshot-td2'})
+	return labels[16].get_text(), values[16].get_text(), labels[22].get_text(), values[22].get_text()
+
+_short_selling('AAPL')
+
