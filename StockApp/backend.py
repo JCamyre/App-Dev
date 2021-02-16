@@ -84,7 +84,7 @@ def _price_predictions(ticker):
 	df = pd.DataFrame(df_data, columns=['Indictator', 'Signal', 'Strength', 'Direction'])
 	print(df.head())
 
-def _ta_indictators(ticker, exchange='NASDAQ'): # Loads wrong page. # Beta, RSI history, above/below 9 SMA, above/below 180 SMA, volatility, rel volume
+def _ta_indictators(ticker, exchange='NASDAQ'): # Loads wrong page. Beta, RSI history, above/below 9 SMA, above/below 180 SMA, volatility, rel volume
 	BASE_URL = f'https://www.tradingview.com/symbols/{exchange}-{ticker}/technicals/'
 	soup = _get_soup(BASE_URL)
 
@@ -172,7 +172,24 @@ def _stock_twits_sentiment(ticker):
 	pass
 
 def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, etc
-	pass
+	# Earnings date: 
+	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}?p={ticker}&.tsrc=fin-srch'
+	soup = _get_soup(BASE_URL)
+
+	earnings_date = soup.find('td', {'data-test': 'EARNINGS_DATE-value'})
+	# FDA approvals
+
+	# Any showcases
+
+	# Investor/analyst days
+
+	# Analyst revisions
+
+	# Management transitions
+
+	# Product launches
+
+	# Significant stock buyback changes
 
 def _big_money(ticker): # Returns recent institutional investments in a stock, as well as the largest shareholders and mutual funds holding the stock
 	BASE_URL = f'https://money.cnn.com/quote/shareholders/shareholders.html?symb={ticker}&subView=institutional'
@@ -210,3 +227,4 @@ def _big_money(ticker): # Returns recent institutional investments in a stock, a
 	return owners_df, mutual_funds_df
 
 
+ 
