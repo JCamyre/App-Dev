@@ -84,7 +84,7 @@ def _price_predictions(ticker):
 	df = pd.DataFrame(df_data, columns=['Indictator', 'Signal', 'Strength', 'Direction'])
 	print(df.head())
 
-def _ta_indictators(ticker, exchange='NASDAQ'): # Loads wrong page
+def _ta_indictators(ticker, exchange='NASDAQ'): # Loads wrong page. # Beta, RSI history, above/below 9 SMA, above/below 180 SMA, volatility, rel volume
 	BASE_URL = f'https://www.tradingview.com/symbols/{exchange}-{ticker}/technicals/'
 	soup = _get_soup(BASE_URL)
 
@@ -158,7 +158,6 @@ def _find_competition(ticker):
 		print(i)
 		print('')
 
-_find_competition('AAPL')
 
 
 def _insider_trading(ticker):
@@ -180,8 +179,34 @@ def _big_money(ticker): # Returns recent institutional investments in a stock, a
 	soup = _get_soup(BASE_URL)
 
 	# Latest institutional activity
-	table = soup.find('table', {'id', 'wsod_institutionalLatestActivity'})
-	print(table)
+	table = soup.find('table', {'class', 'wsod_dataTable wsod_dataTableBig'})
+	rows = table.find_all('tr')
+	for row in rows:
+		date = row.find('td', {'class': 'wsod_activityDate'})
+		info = row.find('td', {'class': 'wsod_activityDetail'})
+		print(date.get_text(), info.get_text()) # Could make a data frame
+
+	# Top 10 Owners of {Ticker}
+	table = soup.find('table', {'class': 'wsod_dataTable wsod_dataTableBig wsod_institutionalTop10'})
+	rows = table.find_all('tr')
+	df_data = []
+	for row in rows:
+		data = row.find_all('td')
+		df_data.append([i.get_text() for i in data])
+
+	owners_df = pd.DataFrame(df_data, columns=['Stockholder', 'Stake', 'Shares owned', 'Total value($)', 'Shares bought / sold', 'Total change'])
+
+	# Top 10 Mutual Funds Holding {Ticker}
+	table = soup.find_all('table', {'class': 'wsod_dataTable wsod_dataTableBig wsod_institutionalTop10'})[1]
+	rows = table.find_all('tr')
+	df_data = []
+	for row in rows:
+		data = row.find_all('td')
+		df_data.append([i.get_text() for i in data])
+
+	mutual_funds_df = pd.DataFrame(df_data, columns=['Stockholder', 'Stake', 'Shares owned', 'Total value($)', 'Shares bought / sold', 'Total change'])
+
+	print(owners_df, mutual_funds_df)
 
 _big_money('cciv')
 
