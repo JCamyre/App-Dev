@@ -143,9 +143,17 @@ def _find_competition(ticker):
 	td = soup.find_all('td', {'class': 'fullview-links'})[1]
 	sectors = td.find_all('a', {'class': 'tab-link'})
 	sector_urls = ([str('https://finviz.com/' + i['href']) for i in sectors])
-	print(sector_urls)
+	for i in sector_urls:
+		print(i)
+		print('')
 
-_find_competition('AAPL')
+
 
 def _insider_trading(ticker):
-	pass
+	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
+	soup = _get_soup(BASE_URL)
+
+	tr = soup.find_all('tr', {'class': "insider-sale-row-2"})
+	print([i.get_text() for i in tr])
+
+_insider_trading('AAPL')
