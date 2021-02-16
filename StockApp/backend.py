@@ -19,6 +19,7 @@ def _no_attributes(tag):
 
 def _get_soup(url):
 	response = get(url, headers=HEADERS, timeout=20)
+	assert response.status_code == 200
 	return BeautifulSoup(response.content, 'lxml')
 
 
@@ -74,9 +75,15 @@ def _price_predictions(ticker):
 	df = pd.DataFrame(df_data, columns=['Indictator', 'Signal', 'Strength', 'Direction'])
 	print(df.head())
 
-def _ta_indictators(ticker):
-	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
+def _ta_indictators(ticker, exchange='NASDAQ'):
+	BASE_URL = f'https://www.tradingview.com/symbols/{exchange}-{ticker}/technicals/'
 	soup = _get_soup(BASE_URL)
+
+	# Buy or sell (Summary, Oscillators, Moving Averages)
+	s = soup.find_all('div', {'class': 'speedometerWrapper-1SNrYKXY'})
+	print(s)
+
+_ta_indictators('AAPL')
 
 def _sentiments_news(ticker): # Returns news articles curated via Finviz
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
@@ -93,4 +100,5 @@ def _sentiments_news(ticker): # Returns news articles curated via Finviz
 	df = pd.DataFrame(df_data, columns=['Time', 'Headline', 'Link'])
 	return df
 
-print(_sentiments_news('AAPL'))
+# print(_sentiments_news('AAPL'))
+
