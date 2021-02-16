@@ -12,6 +12,11 @@ def _no_attributes(tag):
 	if 'td' in str(tag):
 		return tag.has_attr('class') or tag.has_attr('id')
 
+def _get_soup(url):
+	response = get(url, headers=HEADERS, timeout=20)
+	return BeautifulSoup(response.content, 'lxml')
+
+
 HEADERS = {'User-Agent': "'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 " # Telling the website what browser I am "using"
 							 "(KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36'"}
 # Price targets
@@ -43,7 +48,7 @@ def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock
 	analyst_price_targets = analyst_price_targets.set_index('Date')
 	return price_target, percentage, analyst_price_targets
 
-print(_price_target('AAPL'))
+# print(_price_target('AAPL'))
 
 # html = soup.prettify("utf-8") Good way to visualize what your Python code is visualizing
 # with open('output1.html', 'w', encoding='utf-8') as f:
@@ -68,10 +73,18 @@ def _price_predictions(ticker):
 	print(df.head())
 
 def _ta_indictators(ticker):
+	pass
+
 
 def _sentiments_news(ticker):
+	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
+	soup = _get_soup(BASE_URL)
+
 	table = soup.find('table', {'class': 'fullview-news-outer'})
 	rows = table.find_all('tr')
 	for row in rows:
 		date = row.find('td', {'align': 'right'})
 		article = row.find('td', {'align': 'left'})
+		print(date.get_text(), article.get_text())
+
+_sentiments_news('AAPL')
