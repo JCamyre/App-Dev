@@ -113,7 +113,7 @@ def _sentiments_news(ticker): # Returns news articles curated via Finviz
 	df = pd.DataFrame(df_data, columns=['Time', 'Headline', 'Link'])
 
 	# Getting news from google news search
-	googlenews = GoogleNews(lang='en') # Specify period for news
+	googlenews = GoogleNews(lang='en', period='14d') # Specify period for news
 	googlenews.search(ticker) 
 	print([(i, j) for i, j in zip(googlenews.get_texts(), googlenews.get_links())])
 	# To get other pages, do googlenews.get_page(2), etc.
