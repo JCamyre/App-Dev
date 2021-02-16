@@ -60,7 +60,6 @@ def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock
 	analyst_price_targets = analyst_price_targets.set_index('Date')
 	return price_target, percentage, analyst_price_targets
 
-# print(_price_target('AAPL'))
 
 # html = soup.prettify("utf-8") Good way to visualize what your Python code is visualizing
 # with open('output1.html', 'w', encoding='utf-8') as f:
@@ -73,6 +72,7 @@ def _price_predictions(ticker):
 	table = soup.find('table', {'data-ng-class': "{'hide': currentView !== 'strengthDirection'}"})
 	titles = soup.find_all('tr', {'class': 'indicator-title'})
 	titles = [i.get_text() for i in titles]
+
 	data = soup.find_all('tr', {'class': 'indicator-item'})
 	data = [i.get_text() for i in data]
 	data = data[len(data)//2 + 1:]
@@ -98,7 +98,7 @@ def _ta_indictators(ticker, exchange='NASDAQ'): # Loads wrong page
 	# 	file.write(str(soup.prettify('utf-8')))
 
 
-def _sentiments_news(ticker): # Returns news articles curated via Finviz
+def _sentiments_news(ticker): # Returns news articles curated via Finviz and Google News
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
 	soup = _get_soup(BASE_URL)
 
@@ -119,10 +119,11 @@ def _sentiments_news(ticker): # Returns news articles curated via Finviz
 	# To get other pages, do googlenews.get_page(2), etc.
 	return df
 
-_sentiments_news('CCIV')
 
 def _financials(ticker): # OMEGALUL
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}'
+
+	# PE/G, market cap, profit margin, idk what else is important
 
 def _short_selling(ticker):
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
@@ -153,9 +154,11 @@ def _find_competition(ticker):
 	td = soup.find_all('td', {'class': 'fullview-links'})[1]
 	sectors = td.find_all('a', {'class': 'tab-link'})
 	sector_urls = ([str('https://finviz.com/' + i['href']) for i in sectors])
-	for i in sector_urls:
+	for i in sector_urls: # Find stocks with similar P/E ratios and market cap
 		print(i)
 		print('')
+
+_find_competition('AAPL')
 
 
 def _insider_trading(ticker):
@@ -168,3 +171,17 @@ def _insider_trading(ticker):
 
 def _stock_twits_sentiment(ticker):
 	pass
+
+def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, etc
+	pass
+
+def _big_money(ticker): # Returns recent institutional investments in a stock, as well as the largest shareholders and mutual funds holding the stock
+	BASE_URL = f'https://money.cnn.com/quote/shareholders/shareholders.html?symb={ticker}&subView=institutional'
+	soup = _get_soup(BASE_URL)
+
+	# Latest institutional activity
+	table = soup.find('table', {'id', 'wsod_institutionalLatestActivity'})
+	print(table)
+
+_big_money('cciv')
+
