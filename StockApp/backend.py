@@ -142,7 +142,8 @@ def _find_competition(ticker):
 
 	td = soup.find_all('td', {'class': 'fullview-links'})[1]
 	sectors = td.find_all('a', {'class': 'tab-link'})
-	print([i['href'] for i in sectors])
+	sector_urls = ([str('https://finviz.com/' + i['href']) for i in sectors])
+	print(sector_urls)
 
 _find_competition('AAPL')
 
