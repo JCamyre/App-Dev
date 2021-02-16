@@ -4,6 +4,9 @@ import re
 import pandas as pd
 from datetime import datetime
 
+# With the amount I am accessing finviz, would it be easier to make an API?
+# Each stock is an object, use .get_news(), .get_price_targets(), etc.
+
 def _find_match(pattern, text):
 	match = pattern.search(text)
 	return match
@@ -54,7 +57,7 @@ def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock
 def _price_predictions(ticker):
 	BASE_URL = f'https://www.barchart.com/stocks/quotes/{ticker}/opinion'
 	soup = _get_soup(BASE_URL)
-	
+
 	table = soup.find('table', {'data-ng-class': "{'hide': currentView !== 'strengthDirection'}"})
 	titles = soup.find_all('tr', {'class': 'indicator-title'})
 	titles = [i.get_text() for i in titles]
@@ -79,9 +82,14 @@ def _sentiments_news(ticker):
 
 	table = soup.find('table', {'class': 'fullview-news-outer'})
 	rows = table.find_all('tr')
+	df_data = []
 	for row in rows:
 		date = row.find('td', {'align': 'right'})
 		article = row.find('td', {'align': 'left'})
-		print(date.get_text(), article.get_text())
+		link = article.find('a')['href']
+		# print(date.get_text().split(), article.get_text(), link)
+		# df_data.append((date, ))
+	# df = pd.DataFrame(df_data, columns=['Time', 'Headline', 'Link'])
+
 
 _sentiments_news('AAPL')
