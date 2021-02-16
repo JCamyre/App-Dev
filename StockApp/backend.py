@@ -136,4 +136,15 @@ def _put_call_ratio(ticker):
 
 	return ratio_volume, ratio_open_interest, forward_price, call_breakeven_price, put_breakeven_price, option_breakeven_price
 
-def 
+def _find_competition(ticker):
+	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
+	soup = _get_soup(BASE_URL)
+
+	td = soup.find_all('td', {'class': 'fullview-links'})[1]
+	sectors = td.find_all('a', {'class': 'tab-link'})
+	print([i['href'] for i in sectors])
+
+_find_competition('AAPL')
+
+def _insider_trading(ticker):
+	pass
