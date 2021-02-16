@@ -32,18 +32,13 @@ def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock
 	soup = BeautifulSoup(response.content, 'lxml')
 	table = soup.find('table', {'class': "fullview-ratings-outer"})
 	rows = table.find_all('td', {'class': 'fullview-ratings-inner'})
+	df_data = []
 	for row in rows:
 		row = row.find_all('td')
 		date, _, fund, action, pricetarget = [val.get_text() for val in row]
-		print(date, fund, action, pricetarget)
-
-
-	df_data = []
-	for row in rows:
-		print(row.get_text().split())
-		date, fund, action, _, _, pricetarget = row.get_text().split()
-		date = datetime.strptime(date[:9], '%b-%d-%y')
+		date = datetime.strptime(date, '%b-%d-%y')
 		df_data.append((date, fund, action, pricetarget))
+
 	analyst_price_targets = pd.DataFrame(df_data, columns=['Date', 'Fund', 'Action', 'PriceTarget'])
 	analyst_price_targets = analyst_price_targets.set_index('Date')
 	return price_target, percentage, analyst_price_targets
