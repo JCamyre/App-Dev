@@ -14,7 +14,7 @@ def _no_attributes(tag):
 HEADERS = {'User-Agent': "'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 " # Telling the website what browser I am "using"
 							 "(KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36'"}
 # Price targets
-def _price_target(ticker, exchange='NASDAQ'):
+def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock exchange
 	BASE_URL = f'https://www.marketbeat.com/stocks/{exchange}/{ticker}/price-target/'
 	response = get(BASE_URL, headers=HEADERS, timeout=20)
 
@@ -25,9 +25,17 @@ def _price_target(ticker, exchange='NASDAQ'):
 	price_target = _find_match(_pattern, table.get_text()).group(0)
 	_pattern = re.compile(r'\d{1,3}\.\d\d\% \w{6,8}')
 	percentage = _find_match(_pattern, table.get_text()).group(0)
+
+	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
+	response = get(BASE_URL, headers=HEADERS, timeout=20)
+	soup = BeautifulSoup(response.content, 'lxml')
+	table = soup.find_all('table', {'class': "fullview-ratings-outer"})
+	rows = soup.find_all('tr', {'class': 'body-table-rating-neutral'})
+	for row in rows:
+		print(row.get_text())
 	return price_target, percentage
 
-# print(_price_target('AAPL')) # Automatically find correct stock exchange
+_price_target('AAPL')
 
 # html = soup.prettify("utf-8") Good way to visualize what your Python code is visualizing
 # with open('output1.html', 'w', encoding='utf-8') as f:
@@ -51,4 +59,4 @@ def _price_predictions(ticker):
 	df = pd.DataFrame(df_data, columns=['Indictator', 'Signal', 'Strength', 'Direction'])
 	print(df.head())
 
-_price_predictions('AAPL')
+

@@ -13,7 +13,7 @@ https://www.tradingview.com/symbols/NASDAQ-AAPL/technicals/
 
 I dig deeper into technical analysis and the charts. I look at RSI, moving averages, MACD, Stochastic Oscillator, etc. (Prob some site for this)
 
-Sentiment & News. What are people saying? Google the company. (https://pypi.org/project/GoogleNews/)
+Sentiment & News. What are people saying? Google the company. (https://pypi.org/project/GoogleNews/) Can also get from Finviz (https://finviz.com/quote.ashx?t=AAPL)
 
 Earnings & revenue history. Is there growth? Is there potential? I look at the financials and the projections (Lol, but https://www.nasdaq.com/market-activity/stocks/aapl/financials)
 
