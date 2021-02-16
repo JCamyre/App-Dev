@@ -4,6 +4,8 @@ import re
 import pandas as pd
 from datetime import datetime
 
+pd.options.display.max_columns = 10
+
 # With the amount I am accessing finviz, would it be easier to make an API?
 # Each stock is an object, use .get_news(), .get_price_targets(), etc.
 
@@ -76,7 +78,7 @@ def _ta_indictators(ticker):
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
 	soup = _get_soup(BASE_URL)
 
-def _sentiments_news(ticker):
+def _sentiments_news(ticker): # Returns news articles curated via Finviz
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
 	soup = _get_soup(BASE_URL)
 
@@ -87,9 +89,8 @@ def _sentiments_news(ticker):
 		date = row.find('td', {'align': 'right'})
 		article = row.find('td', {'align': 'left'})
 		link = article.find('a')['href']
-		# print(date.get_text().split(), article.get_text(), link)
-		# df_data.append((date, ))
-	# df = pd.DataFrame(df_data, columns=['Time', 'Headline', 'Link'])
+		df_data.append((date.get_text(), article.get_text(), link))
+	df = pd.DataFrame(df_data, columns=['Time', 'Headline', 'Link'])
+	return df
 
-
-_sentiments_news('AAPL')
+print(_sentiments_news('AAPL'))
