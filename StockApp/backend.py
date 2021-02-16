@@ -177,6 +177,7 @@ def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, et
 	soup = _get_soup(BASE_URL)
 
 	earnings_date = soup.find('td', {'data-test': 'EARNINGS_DATE-value'})
+	print(f'Next earnings date: {earnings_date.get_text()}')
 	# FDA approvals
 
 	# Any showcases
@@ -190,6 +191,8 @@ def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, et
 	# Product launches
 
 	# Significant stock buyback changes
+
+_catalysts('AAPL')
 
 def _big_money(ticker): # Returns recent institutional investments in a stock, as well as the largest shareholders and mutual funds holding the stock
 	BASE_URL = f'https://money.cnn.com/quote/shareholders/shareholders.html?symb={ticker}&subView=institutional'
