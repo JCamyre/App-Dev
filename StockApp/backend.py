@@ -179,7 +179,7 @@ def _insider_trading(ticker):
 	print([i.get_text() for i in tr])
 
 
-def _stock_twits_sentiment(ticker):
+def _stock_twits_sentiment(ticker): # ALso reddit sentiment
 	pass
 
 def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, etc
@@ -195,8 +195,32 @@ def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, et
 	soup = _get_soup(BASE_URL)
 
 	df_data = []
-	company_names = soup.find_all('div', {'data-th': 'Company Name'})
-	print(company_names[0].get_text())
+	company = soup.find_all('div', {'data-th': 'Company Name'})
+	print(company[0].get_text())
+
+	events = soup.find_all('div', {'data-th': 'Event'})
+	print(events[0].get_text())
+
+	outcome = soup.find_all('div', {'data-th': 'Outcome'})
+	if outcome[0]:
+		print(outcome[0].get_text())
+
+	dates = soup.find_all('span', {'class': 'evntDate'})
+
+	for i in range(len(company)):
+		if outcome[i]:
+			try:
+				date = datetime.strptime(events[i].get_text().split()[0], '%m/%d/%Y')
+			except:
+				date = None
+
+			df_data.append([company[i].get_text(), events[i].get_text(), outcome[i].get_text()])
+		else:
+			df_data.append([company[i].get_text(), events[i].get_text(), outcome[i]])
+
+
+	df = pd.DataFrame(df_data, columns=['Company Name', 'Event', 'Outcome'])
+	print(df.head())
 	# ?PageNum=1
 
 	# Any showcases
