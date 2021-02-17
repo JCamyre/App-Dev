@@ -33,7 +33,19 @@ def _get_summary(ticker):
 	soup = _get_soup(BASE_URL)
 
 	summary = soup.find('p', {'class': 'description__text'})
-	return summary.get_text()
+
+	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}?p={ticker}'
+	soup = _get_soup(BASE_URL)
+	website = soup.find('a', {'title': 'Company Profile'})
+	if website:
+		website = website['href']
+
+	return summary.get_text(), website
+
+print(_get_summary('CCIV'))
+
+
+	# Find the website of the stock and go to its information page
 
 def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock exchange
 	soup = _get_soup(BASE_URL)
