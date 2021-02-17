@@ -154,10 +154,9 @@ def _find_competition(ticker):
 	td = soup.find_all('td', {'class': 'fullview-links'})[1]
 	sectors = td.find_all('a', {'class': 'tab-link'})
 	sector_urls = ([str('https://finviz.com/' + i['href']) for i in sectors])
-	for i in sector_urls: # Find stocks with similar P/E ratios and market cap
+	for i in sector_urls: # Find stocks with similar P/E ratios and market cap, then track difference in performance
 		print(i)
 		print('')
-
 
 
 def _insider_trading(ticker):
@@ -178,7 +177,15 @@ def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, et
 
 	earnings_date = soup.find('td', {'data-test': 'EARNINGS_DATE-value'})
 	print(f'Next earnings date: {earnings_date.get_text()}')
+
 	# FDA approvals
+	BASE_URL = 'https://www.rttnews.com/corpinfo/fdacalendar.aspx'
+	soup = _get_soup(BASE_URL)
+
+	df_data = []
+	company_names = soup.find_all('div', {'data-th': 'Company Name'})
+	print(company_names[0].get_text())
+	# ?PageNum=1
 
 	# Any showcases
 
