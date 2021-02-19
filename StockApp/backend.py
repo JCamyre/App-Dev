@@ -12,6 +12,8 @@ pd.options.display.max_columns = 10
 
 # Make this a class, then for all of these don't need ticker, just do self.ticker
 
+# Code reuse
+
 def _find_match(pattern, text):
 	match = pattern.search(text)
 	return match
@@ -42,10 +44,12 @@ def _get_summary(ticker):
 
 	return summary.get_text(), website
 
-print(_get_summary('CCIV'))
-
 
 	# Find the website of the stock and go to its information page
+
+def _basic_stats(ticker):
+	# Market cap, avg volume, price, chart, 
+	pass
 
 def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock exchange
 	soup = _get_soup(BASE_URL)
@@ -110,7 +114,7 @@ def _ta_indictators(ticker, exchange='NASDAQ'): # Loads wrong page. Beta, RSI hi
 	# 	file.write(str(soup.prettify('utf-8')))
 
 
-def _sentiments_news(ticker): # Returns news articles curated via Finviz and Google News
+def _sentiments_news(ticker): # Returns news articles curated via Finviz, Yahoo, and Google News
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
 	soup = _get_soup(BASE_URL)
 
@@ -129,6 +133,8 @@ def _sentiments_news(ticker): # Returns news articles curated via Finviz and Goo
 	googlenews.search(ticker) 
 	print([(i, j) for i, j in zip(googlenews.get_texts(), googlenews.get_links())])
 	# To get other pages, do googlenews.get_page(2), etc.
+
+	# https://finance.yahoo.com/quote/CLOV/press-releases?p=CLOV, https://finance.yahoo.com/quote/CLOV/news?p=CLOV
 	return df
 
 
@@ -179,8 +185,16 @@ def _insider_trading(ticker):
 	print([i.get_text() for i in tr])
 
 
-def _stock_twits_sentiment(ticker): # ALso reddit sentiment
-	pass
+def _social_media_sentiment(ticker): # ALso reddit sentiment, and twitter
+	# Twitter
+	BASE_URL = f'https://twitter.com/search?q=%24{ticker}&src=typed_query'
+	print(BASE_URL)
+	soup = _get_soup(BASE_URL)
+
+	tweets = soup.find_all('div', {'class': 'css-1dbjc4n r-18u37iz'})
+	print(tweets)	
+
+# _social_media_sentiment('cciv')
 
 def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, etc
 	# Earnings date: 
@@ -206,22 +220,27 @@ def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, et
 		print(outcome[0].get_text())
 
 	dates = soup.find_all('span', {'class': 'evntDate'})
+	print([date.get_text() for date in dates])
 
 	for i in range(len(company)):
 		if outcome[i]:
-			try:
-				date = datetime.strptime(events[i].get_text().split()[0], '%m/%d/%Y')
-			except:
-				date = None
+			if not len(dates[i].split()) > 1:
+				date = datetime.strptime(dates[i].get_text(), '%m/%d/%Y')
+			else:
+				date = datetime.strptime(dates[i].split()[1:].get_text(), '%b %Y')
 
-			df_data.append([company[i].get_text(), events[i].get_text(), outcome[i].get_text()])
+			df_data.append([date, company[i].get_text(), events[i].get_text(), outcome[i].get_text()])
 		else:
 			df_data.append([company[i].get_text(), events[i].get_text(), outcome[i]])
 
 
-	df = pd.DataFrame(df_data, columns=['Company Name', 'Event', 'Outcome'])
+	df = pd.DataFrame(df_data, columns=['Date', 'Company Name', 'Event', 'Outcome'])
+	df.set_index('Date')
 	print(df.head())
-	# ?PageNum=1
+	# ?PageNum=4 to ?PageNum=1
+
+
+	# Look for keywords in the news?
 
 	# Any showcases
 
@@ -235,7 +254,7 @@ def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, et
 
 	# Significant stock buyback changes
 
-_catalysts('AAPL')
+# _catalysts('AAPL')
 
 def _big_money(ticker): # Returns recent institutional investments in a stock, as well as the largest shareholders and mutual funds holding the stock
 	BASE_URL = f'https://money.cnn.com/quote/shareholders/shareholders.html?symb={ticker}&subView=institutional'
@@ -270,7 +289,20 @@ def _big_money(ticker): # Returns recent institutional investments in a stock, a
 
 	mutual_funds_df = pd.DataFrame(df_data, columns=['Stockholder', 'Stake', 'Shares owned', 'Total value($)', 'Shares bought / sold', 'Total change'])
 
-	return owners_df, mutual_funds_df
+	BASE_URL = f'https://fintel.io/so/us/{ticker}'
+	soup = _get_soup(BASE_URL)
+	table = soup.find('table', {'id': 'transactions'})
 
+	rows = table.find_all('tr')
+	df_data = []
+	for row in rows[1:]:
+		date, form, investor, _, opt, avgshareprice, shares, shareschanged, value, valuechanged, _, _, _ = [i.get_text() for i in row.find_all('td')]
+		df_data.append([date, form, investor, opt, avgshareprice, shares, shareschanged, value, valuechanged])
 
- 
+	recent_purchases_df = pd.DataFrame(df_data, columns=['Date', 'Form', 'Investor', 'Opt', 'Avg Share Price',
+		'Shares', 'Shares Changed (%)', 'Value ($1000)', 'Value Changed (%)'])
+	recent_purchases_df = recent_purchases_df.set_index('Date').sort_index(ascending=False)
+
+	return owners_df, mutual_funds_df, recent_purchases_df.tail()
+
+print(_big_money('pltr'))
