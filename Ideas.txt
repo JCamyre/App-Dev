@@ -52,3 +52,8 @@ twitter api for spac twitter, other penny stock twitter dud
 Do something with stock twits messages quantity increase and such
 
 Earnings date
+
+Check the companies' twitter for announcments of events.
+
+Maybe buy 1k worth of a stock when dip 10%. That why if it goes back up, got a good price, and if it still goes down, my cost basis didn't go up too much.
+
