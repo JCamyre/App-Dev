@@ -195,14 +195,14 @@ def _insider_trading(ticker):
 	print([i.get_text() for i in tr])
 
 
-def _social_media_sentiment(ticker): # Also reddit sentiment, and twitter
+def _social_media_sentiment(ticker, num_of_tweets=50): # Also reddit sentiment, and twitter
 	# Twitter
 	load_dotenv()
 	consumer_key = os.getenv('API_KEY')
 	consumer_secret = os.getenv('API_SECRET_KEY')
 	auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
 	api = tweepy.API(auth, wait_on_rate_limit=True)
-	for i, tweet in enumerate(tweepy.Cursor(api.search, q=f'${ticker}', count=10).items(10)):
+	for i, tweet in enumerate(tweepy.Cursor(api.search, q=f'${ticker}', count=num_of_tweets).items(num_of_tweets)):
 		print(i, tweet.text, tweet.author.screen_name, tweet.retweet_count, tweet.favorite_count, tweet.created_at)
 
 _social_media_sentiment('PLTR')
