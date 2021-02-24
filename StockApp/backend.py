@@ -4,6 +4,9 @@ import re
 import pandas as pd
 from datetime import datetime
 from GoogleNews import GoogleNews
+from dotenv import load_dotenv
+import os 
+import tweepy 
 
 pd.options.display.max_columns = 10
 # jupyter notebook
@@ -192,16 +195,17 @@ def _insider_trading(ticker):
 	print([i.get_text() for i in tr])
 
 
-def _social_media_sentiment(ticker): # ALso reddit sentiment, and twitter
+def _social_media_sentiment(ticker): # Also reddit sentiment, and twitter
 	# Twitter
-	BASE_URL = f''
-	print(BASE_URL)
-	soup = _get_soup(BASE_URL)
+	load_dotenv()
+	consumer_key = os.getenv('API_KEY')
+	consumer_secret = os.getenv('API_SECRET_KEY')
+	auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
+	api = tweepy.API(auth, wait_on_rate_limit=True)
+	for i, tweet in enumerate(tweepy.Cursor(api.search, q=f'${ticker}', count=10).items(10)):
+		print(i, tweet.text, tweet.author.screen_name, tweet.retweet_count, tweet.favorite_count, tweet.created_at)
 
-	tweets = soup.find_all('div', {'class': 'css-1dbjc4n r-18u37iz'})
-	print(tweets)	
-
-# _social_media_sentiment('cciv')
+_social_media_sentiment('PLTR')
 
 def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, etc
 	# Earnings date: 
@@ -312,4 +316,4 @@ def _big_money(ticker): # Returns recent institutional investments in a stock, a
 
 	return owners_df, mutual_funds_df, recent_purchases_df.tail()
 
-print(_big_money('pltr'))
+# print(_big_money('pltr'))
