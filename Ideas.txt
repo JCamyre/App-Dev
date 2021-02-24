@@ -57,3 +57,5 @@ Check the companies' twitter for announcments of events.
 
 Maybe buy 1k worth of a stock when dip 10%. That why if it goes back up, got a good price, and if it still goes down, my cost basis didn't go up too much.
 
+Ideas for website format: 
+Search bar to enter stock ticker (autofill) and a search button. Dropdown menus for certain parameters.

@@ -6,6 +6,11 @@ from datetime import datetime
 from GoogleNews import GoogleNews
 
 pd.options.display.max_columns = 10
+# jupyter notebook
+
+# Make sure to install python-dotenv, not pip install dotenv
+
+# Add to Py-Trading, 1.0.0
 
 # With the amount I am accessing finviz, would it be easier to make an API?
 # Each stock is an object, use .get_news(), .get_price_targets(), etc.
@@ -30,6 +35,8 @@ def _get_soup(url):
 
 HEADERS = {'User-Agent': "'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) AppleWebKit/537.36 " # Telling the website what browser I am "using"
 							 "(KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36'"}
+
+# Make this all one big function
 def _get_summary(ticker):
 	BASE_URL = f'https://www.marketwatch.com/investing/stock/{ticker}'
 	soup = _get_soup(BASE_URL)
@@ -114,7 +121,7 @@ def _ta_indictators(ticker, exchange='NASDAQ'): # Loads wrong page. Beta, RSI hi
 	# 	file.write(str(soup.prettify('utf-8')))
 
 
-def _sentiments_news(ticker): # Returns news articles curated via Finviz, Yahoo, and Google News
+def _sentiments_news(ticker): # Returns news articles curated via Finviz, Yahoo, and Google News, GET UNUSUAL OPTION ACTIVITY
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
 	soup = _get_soup(BASE_URL)
 
@@ -152,7 +159,7 @@ def _short_selling(ticker):
 	return labels[16].get_text(), values[16].get_text(), labels[22].get_text(), values[22].get_text()
 
 
-def _put_call_ratio(ticker):
+def _put_call_ratio(ticker): 
 	BASE_URL = f'https://www.alphaquery.com/stock/{ticker}/volatility-option-statistics/120-day/put-call-ratio-oi'
 	soup = _get_soup(BASE_URL)
 
@@ -187,7 +194,7 @@ def _insider_trading(ticker):
 
 def _social_media_sentiment(ticker): # ALso reddit sentiment, and twitter
 	# Twitter
-	BASE_URL = f'https://twitter.com/search?q=%24{ticker}&src=typed_query'
+	BASE_URL = f''
 	print(BASE_URL)
 	soup = _get_soup(BASE_URL)
 
