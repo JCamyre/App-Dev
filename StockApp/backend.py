@@ -59,8 +59,16 @@ def _get_summary(ticker):
 
 def _basic_stats(ticker):
 	# Market cap, avg volume, price, chart, 
-	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
+	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}'
 	soup = _get_soup(BASE_URL)
+
+	# Financial highlights
+	div = soup.find('div', {'class': 'Mb(10px) Pend(20px) smartphone_Pend(0px)'})
+	print(div.find('div', {'class data-reactid': '453'}))
+
+	# Trading Information
+	div = soup.find('div', {'class': 'Pstart(20px) smartphone_Pstart(0px)'})
+	print(div.get_text())
 
 	# Income Statement
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/financials?p={ticker}'
@@ -69,6 +77,8 @@ def _basic_stats(ticker):
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/balance-sheet?p={ticker}'
 	soup = _get_soup(BASE_URL)
 	pass
+
+_basic_stats('uuuu')
 
 def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock exchange
 	soup = _get_soup(BASE_URL)
@@ -169,7 +179,7 @@ def _news_sentiments(ticker): # Returns news articles curated via Finviz, Yahoo,
 
 	return df
 
-_news_sentiments('aapl')
+# _news_sentiments('aapl')
 
 def _financials(ticker): # OMEGALUL
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}'
