@@ -124,7 +124,7 @@ def _ta_indictators(ticker, exchange='NASDAQ'): # Loads wrong page. Beta, RSI hi
 	# 	file.write(str(soup.prettify('utf-8')))
 
 
-def _sentiments_news(ticker): # Returns news articles curated via Finviz, Yahoo, and Google News, GET UNUSUAL OPTION ACTIVITY
+def _news_sentiments(ticker): # Returns news articles curated via Finviz, Yahoo, and Google News, GET UNUSUAL OPTION ACTIVITY
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
 	soup = _get_soup(BASE_URL)
 
@@ -141,12 +141,25 @@ def _sentiments_news(ticker): # Returns news articles curated via Finviz, Yahoo,
 	# Getting news from google news search
 	googlenews = GoogleNews(lang='en', period='14d') # Specify period for news
 	googlenews.search(ticker) 
-	print([(i, j) for i, j in zip(googlenews.get_texts(), googlenews.get_links())])
+	# print([(i, j) for i, j in zip(googlenews.get_texts(), googlenews.get_links())])
 	# To get other pages, do googlenews.get_page(2), etc.
 
-	# https://finance.yahoo.com/quote/CLOV/press-releases?p=CLOV, https://finance.yahoo.com/quote/CLOV/news?p=CLOV
+	# , 
+	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/news?p={ticker}'
+	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/press-releases?p={ticker}
+	soup = _get_soup(BASE_URL)
+	with open('output1.html', 'w') as file:
+		file.write(soup)
+
+	links = soup.find_all('a', {'class': 'js-content-viewer wafer-caas Fw(b) Fz(18px) Lh(23px) LineClamp(2,46px) Fz(17px)--sm1024 Lh(19px)--sm1024 LineClamp(2,38px)--sm1024 mega-item-header-link Td(n) C(#0078ff):h C(#000) LineClamp(2,46px) LineClamp(2,38px)--sm1024 not-isInStreamVideoEnabled'})
+	print([(link.get_text(), str('yahoo.com' + link['href'])) for link in links])
+
+	# Look for keywords in the news? Any showcases, Investor/analyst days, Analyst revisions, Management transitions
+	# Product launches, Significant stock buyback changes
+
 	return df
 
+_news_sentiments('aapl')
 
 def _financials(ticker): # OMEGALUL
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}'
@@ -205,7 +218,7 @@ def _social_media_sentiment(ticker, num_of_tweets=50): # Also reddit sentiment, 
 	for i, tweet in enumerate(tweepy.Cursor(api.search, q=f'${ticker}', count=num_of_tweets).items(num_of_tweets)):
 		print(i, tweet.text, tweet.author.screen_name, tweet.retweet_count, tweet.favorite_count, tweet.created_at)
 
-_social_media_sentiment('PLTR')
+# _social_media_sentiment('PLTR')
 
 def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, etc
 	# Earnings date: 
@@ -244,26 +257,14 @@ def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, et
 		else:
 			df_data.append([company[i].get_text(), events[i].get_text(), outcome[i]])
 
-
+	# FDA trials
 	df = pd.DataFrame(df_data, columns=['Date', 'Company Name', 'Event', 'Outcome'])
 	df.set_index('Date')
 	print(df.head())
 	# ?PageNum=4 to ?PageNum=1
 
 
-	# Look for keywords in the news?
 
-	# Any showcases
-
-	# Investor/analyst days
-
-	# Analyst revisions
-
-	# Management transitions
-
-	# Product launches
-
-	# Significant stock buyback changes
 
 # _catalysts('AAPL')
 
