@@ -144,16 +144,17 @@ def _news_sentiments(ticker): # Returns news articles curated via Finviz, Yahoo,
 	# print([(i, j) for i, j in zip(googlenews.get_texts(), googlenews.get_links())])
 	# To get other pages, do googlenews.get_page(2), etc.
 
-	# , 
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/news?p={ticker}'
-	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/press-releases?p={ticker}
 	soup = _get_soup(BASE_URL)
-	with open('output1.html', 'w') as file:
-		file.write(soup)
 
 	links = soup.find_all('a', {'class': 'js-content-viewer wafer-caas Fw(b) Fz(18px) Lh(23px) LineClamp(2,46px) Fz(17px)--sm1024 Lh(19px)--sm1024 LineClamp(2,38px)--sm1024 mega-item-header-link Td(n) C(#0078ff):h C(#000) LineClamp(2,46px) LineClamp(2,38px)--sm1024 not-isInStreamVideoEnabled'})
 	print([(link.get_text(), str('yahoo.com' + link['href'])) for link in links])
 
+	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/press-releases?p={ticker}'
+	soup = _get_soup(BASE_URL)
+
+	links = soup.find_all('a', {'class': 'js-content-viewer wafer-caas Fw(b) Fz(18px) Lh(23px) LineClamp(2,46px) Fz(17px)--sm1024 Lh(19px)--sm1024 LineClamp(2,38px)--sm1024 mega-item-header-link Td(n) C(#0078ff):h C(#000) LineClamp(2,46px) LineClamp(2,38px)--sm1024 not-isInStreamVideoEnabled'})
+	print([(link.get_text(), str('yahoo.com' + link['href'])) for link in links])
 	# Look for keywords in the news? Any showcases, Investor/analyst days, Analyst revisions, Management transitions
 	# Product launches, Significant stock buyback changes
 
