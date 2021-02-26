@@ -62,13 +62,16 @@ def _basic_stats(ticker):
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}'
 	soup = _get_soup(BASE_URL)
 
+	with open('output1.html', 'w', encoding='utf-8') as file:
+		file.write(str(soup))
+
 	# Financial highlights
 	div = soup.find('div', {'class': 'Mb(10px) Pend(20px) smartphone_Pend(0px)'})
-	print(div.find('div', {'class data-reactid': '453'}))
+	print([(i.find('h3', {'class': 'Mt(20px)'}), i.find('tbody').find_all('tr')) for i in div.find_all('div', {'class': 'Pos(r) Mt(10px)'})])
 
 	# Trading Information
 	div = soup.find('div', {'class': 'Pstart(20px) smartphone_Pstart(0px)'})
-	print(div.get_text())
+	print([(i.find('h3', {'class': 'Mt(20px)'}), i.find('tbody').find_all('tr')) for i in div.find_all('div', {'class': 'Pos(r) Mt(10px)'})])
 
 	# Income Statement
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/financials?p={ticker}'
