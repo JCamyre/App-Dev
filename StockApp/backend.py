@@ -59,6 +59,15 @@ def _get_summary(ticker):
 
 def _basic_stats(ticker):
 	# Market cap, avg volume, price, chart, 
+	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
+	soup = _get_soup(BASE_URL)
+
+	# Income Statement
+	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/financials?p={ticker}'
+	soup = _get_soup(BASE_URL)
+	# Balance Sheet
+	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/balance-sheet?p={ticker}'
+	soup = _get_soup(BASE_URL)
 	pass
 
 def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock exchange
@@ -164,7 +173,9 @@ _news_sentiments('aapl')
 
 def _financials(ticker): # OMEGALUL
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}'
+	soup = _get_soup(BASE_URL)
 
+	
 	# PE/G, market cap, profit margin, idk what else is important
 
 def _short_selling(ticker):
