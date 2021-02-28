@@ -81,7 +81,7 @@ def _basic_stats(ticker):
 	soup = _get_soup(BASE_URL)
 	pass
 
-_basic_stats('uuuu')
+# _basic_stats('uuuu')
 
 def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock exchange
 	soup = _get_soup(BASE_URL)
@@ -188,8 +188,14 @@ def _financials(ticker): # OMEGALUL
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}'
 	soup = _get_soup(BASE_URL)
 
-	
+	with open('output1.html', 'w', encoding='utf-8') as file:
+		file.write(str(soup))
 	# PE/G, market cap, profit margin, idk what else is important
+	div = soup.find('div', {'id': 'quote-summary'})
+	print('Avg. Volume: ' + div.find('span', {'data-reactid': '48'}).get_text(), 'Market Cap: ' + div.find('span', {'data-reactid': '56'}).get_text(), 
+	'Beta (5Y Monthly): ' + div.find('span', {'data-reactid': '61'}).get_text(), 'PE Ratio (TTM): ' + div.find('span', {'data-reactid': '66'}).get_text())
+
+_financials('AAPL')
 
 def _short_selling(ticker):
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
