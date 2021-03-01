@@ -192,8 +192,8 @@ def _financials(ticker): # OMEGALUL
 		file.write(str(soup))
 	# PE/G, market cap, profit margin, idk what else is important
 	div = soup.find('div', {'id': 'quote-summary'})
-	print('Avg. Volume: ' + div.find('span', {'data-reactid': '48'}).get_text(), 'Market Cap: ' + div.find('span', {'data-reactid': '56'}).get_text(), 
-	'Beta (5Y Monthly): ' + div.find('span', {'data-reactid': '61'}).get_text(), 'PE Ratio (TTM): ' + div.find('span', {'data-reactid': '66'}).get_text())
+	return 'Avg. Volume: ' + div.find('span', {'data-reactid': '48'}).get_text(), 'Market Cap: ' + div.find('span', {'data-reactid': '56'}).get_text(), 
+	'Beta (5Y Monthly): ' + div.find('span', {'data-reactid': '61'}).get_text(), 'PE Ratio (TTM): ' + div.find('span', {'data-reactid': '66'}).get_text()
 
 _financials('AAPL')
 
