@@ -230,6 +230,12 @@ def _find_competition(ticker):
 
 def _etfs(ticker):
 	BASE_URL = f'https://etfdb.com/stock/{ticker}/'
+	soup = _get_soup(BASE_URL)
+	tbody = soup.find('tbody')
+	rows = tbody.find_all('tr')
+	rows = [[i.get_text() for i in row.find_all('td')] for row in rows]
+	train_df = pd.DataFrame(rows, columns={'Ticker', 'ETF', 'ETF Category', 'Expense Ratio', 'Weighting'})
+	return train_df
 
 def _insider_trading(ticker):
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
