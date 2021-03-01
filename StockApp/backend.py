@@ -195,8 +195,6 @@ def _financials(ticker): # OMEGALUL
 	return 'Avg. Volume: ' + div.find('span', {'data-reactid': '48'}).get_text(), 'Market Cap: ' + div.find('span', {'data-reactid': '56'}).get_text(), 
 	'Beta (5Y Monthly): ' + div.find('span', {'data-reactid': '61'}).get_text(), 'PE Ratio (TTM): ' + div.find('span', {'data-reactid': '66'}).get_text()
 
-_financials('AAPL')
-
 def _short_selling(ticker):
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
 	soup = _get_soup(BASE_URL)
@@ -230,14 +228,15 @@ def _find_competition(ticker):
 		print(i)
 		print('')
 
+def _etfs(ticker):
+	BASE_URL = f'https://etfdb.com/stock/{ticker}/'
 
 def _insider_trading(ticker):
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
 	soup = _get_soup(BASE_URL)
 
 	tr = soup.find_all('tr', {'class': "insider-sale-row-2"})
-	print([i.get_text() for i in tr])
-
+	return [i.get_text() for i in tr]
 
 def _social_media_sentiment(ticker, num_of_tweets=50): # Also reddit sentiment, and twitter
 	# Twitter
@@ -248,8 +247,6 @@ def _social_media_sentiment(ticker, num_of_tweets=50): # Also reddit sentiment, 
 	api = tweepy.API(auth, wait_on_rate_limit=True)
 	for i, tweet in enumerate(tweepy.Cursor(api.search, q=f'${ticker}', count=num_of_tweets).items(num_of_tweets)):
 		print(i, tweet.text, tweet.author.screen_name, tweet.retweet_count, tweet.favorite_count, tweet.created_at)
-
-# _social_media_sentiment('PLTR')
 
 def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, etc
 	# Earnings date: 
@@ -293,11 +290,6 @@ def _catalysts(ticker): # Returns date of showcases, FDA approvals, earnings, et
 	df.set_index('Date')
 	print(df.head())
 	# ?PageNum=4 to ?PageNum=1
-
-
-
-
-# _catalysts('AAPL')
 
 def _big_money(ticker): # Returns recent institutional investments in a stock, as well as the largest shareholders and mutual funds holding the stock
 	BASE_URL = f'https://money.cnn.com/quote/shareholders/shareholders.html?symb={ticker}&subView=institutional'
