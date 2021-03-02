@@ -185,25 +185,27 @@ def _news_sentiments(ticker): # Returns news articles curated via Finviz, Yahoo,
 # _news_sentiments('aapl')
 
 def _financials(ticker): # OMEGALUL
-	# Displaying all information
+	# Displaying all information. Could leave this as a dictionary.
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
 	soup = _get_soup(BASE_URL)
 	table = soup.find('table', {'class': 'snapshot-table2'})
 	labels = table.find_all('td', {'class': 'snapshot-td2-cp'})
 	values = table.find_all('td', {'class': 'snapshot-td2'})
-	print([label.get_text() for label in labels], [val.get_text() for val in values])
+	info_dict = {}
+	for label, val in zip(labels, values):
+		info_dict[str(label.get_text())] = str(val.get_text()) 
+	df = pd.DataFrame(info_dict.items(), columns={'Label', 'Value'})
 
 	# yo
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}'
 	soup = _get_soup(BASE_URL)
 
-
 	# PE/G, market cap, profit margin, idk what else is important
 	div = soup.find('div', {'id': 'quote-summary'})
-	return 'Avg. Volume: ' + div.find('span', {'data-reactid': '48'}).get_text(), 'Market Cap: ' + div.find('span', {'data-reactid': '56'}).get_text(), 
+	return df, 'Avg. Volume: ' + div.find('span', {'data-reactid': '48'}).get_text(), 'Market Cap: ' + div.find('span', {'data-reactid': '56'}).get_text(), 
 	'Beta (5Y Monthly): ' + div.find('span', {'data-reactid': '61'}).get_text(), 'PE Ratio (TTM): ' + div.find('span', {'data-reactid': '66'}).get_text()
 
-_financials('pltr')
+print(_financials('pltr'))
 
 def _short_selling(ticker):
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
