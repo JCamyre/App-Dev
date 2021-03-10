@@ -76,14 +76,14 @@ def _basic_stats(ticker):
 	# Income Statement
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/financials?p={ticker}'
 	soup = _get_soup(BASE_URL)
+
 	# Balance Sheet
 	BASE_URL = f'https://finance.yahoo.com/quote/{ticker}/balance-sheet?p={ticker}'
 	soup = _get_soup(BASE_URL)
 	pass
 
-# _basic_stats('uuuu')
-
-def _price_target(ticker, exchange='NASDAQ'): # Automatically find correct stock exchange
+def _price_target(ticker, exchange='NASDAQ'): # To do: Automatically find correct stock exchange
+	BASE_URL = f'https://www.marketbeat.com/stocks/{exchange}/{ticker}/price-target/'
 	soup = _get_soup(BASE_URL)
 	table = soup.find('table', {'class': "scroll-table"})
 	# price_target = soup.find('table', {'class': 'scroll-table'})
@@ -133,18 +133,27 @@ def _price_predictions(ticker):
 	print(df.head())
 
 def _ta_indictators(ticker, exchange='NASDAQ'): # Loads wrong page. Beta, RSI history, above/below 9 SMA, above/below 180 SMA, volatility, rel volume
-	BASE_URL = f'https://www.tradingview.com/symbols/{exchange}-{ticker}/technicals/'
+	BASE_URL = f'https://www.tradingview.com/symbols/{ticker}/technicals/'
+	# Modify _get_soup function for special purpose (acquisition company).
+	response = get(BASE_URL, headers=HEADERS, timeout=20)
+	assert response.status_code == 200
+	exchange = response.url.split('/')[-2]
+
+	BASE_URL = f'https://www.tradingview.com/symbols/{exchange}/technicals/'
 	soup = _get_soup(BASE_URL)
+
+	with open('output1.html', 'w', encoding='utf-8') as file:
+		file.write(str(soup))
+
+	# print(soup.find('a', {'href': "/scripts/relativestrengthindex/"}))
 
 	# Buy or sell (Summary, Oscillators, Moving Averages)
 	s = soup.find_all('div', {'class': 'speedometerWrapper-1SNrYKXY'})
-	print(s)
 
 	# Oscillators
 	oscillators = soup.find('div', {'class': 'container-2w8ThMcC tableWithAction-2OCRQQ8y'})
-	# with open('output1.html', 'w', encoding='utf-8') as file:
-	# 	file.write(str(soup.prettify('utf-8')))
 
+_ta_indictators('CCIV')
 
 def _news_sentiments(ticker): # Returns news articles curated via Finviz, Yahoo, and Google News, GET UNUSUAL OPTION ACTIVITY
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
@@ -182,8 +191,6 @@ def _news_sentiments(ticker): # Returns news articles curated via Finviz, Yahoo,
 
 	return df
 
-# _news_sentiments('aapl')
-
 def _financials(ticker): # OMEGALUL
 	# Displaying all information. Could leave this as a dictionary.
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
@@ -204,8 +211,6 @@ def _financials(ticker): # OMEGALUL
 	div = soup.find('div', {'id': 'quote-summary'})
 	return df, 'Avg. Volume: ' + div.find('span', {'data-reactid': '48'}).get_text(), 'Market Cap: ' + div.find('span', {'data-reactid': '56'}).get_text(), 
 	'Beta (5Y Monthly): ' + div.find('span', {'data-reactid': '61'}).get_text(), 'PE Ratio (TTM): ' + div.find('span', {'data-reactid': '66'}).get_text()
-
-print(_financials('pltr'))
 
 def _short_selling(ticker):
 	BASE_URL = f'https://finviz.com/quote.ashx?t={ticker}'
@@ -359,4 +364,3 @@ def _big_money(ticker): # Returns recent institutional investments in a stock, a
 
 	return owners_df, mutual_funds_df, recent_purchases_df.tail()
 
-# print(_big_money('pltr'))
